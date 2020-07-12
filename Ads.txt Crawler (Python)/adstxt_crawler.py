@@ -17,7 +17,6 @@ except ImportError:
 from tld import get_fld
 
 
-
 def load_url_queue(csv_domain_list, url_queue, domain_queue):
     
     row_count = 0
@@ -188,6 +187,26 @@ def processing_row_to_database(connection, data_row, comment, domain_name, line_
         return 1
 
     return 0
+
+def error_log (connection, domain_name, data_row, comment, line_number, error_message):
+    insert_stmt = "INSERT INTO ads_txt_error_logs (domain_name, error_message) VALUES (?,?)";
+    c = connection.cursor()
+    c.execute(insert_stmt, (domain_name, error_message,))
+
+    data = c.fetchall()
+    try:
+        if not data:
+            connection.commit()
+    except sqlite3.Error as e:
+        print("Database error: %s" % (' '.join(e.args)))
+    except Exception as e:
+        print("Exception in _query: %s" % e)
+    
+    #(1,domain_name,advertiser_domain,publisher_id, account_type,cert_authority_id,1,1,data_row,datetime.now(),datetime.now()))
+
+    # Save (commit) the changes
+    connection.commit()
+    pass
 
 
 
