@@ -121,6 +121,73 @@ def storing_data_to_database (connection, url_queue, domain_queue):
 
     return row_count
 
+def processing_row_to_database(connection, data_row, comment, domain_name, line_number):
+
+    #print (connection) 
+    #print (data_row)
+    #print (comment)
+    #print (hostname)
+
+    print (comment)
+    insert_stmt = "INSERT INTO ads_txt_parsed_lines (domain_name, advertiser_domain, publisher_id, account_type, cert_authority_id, line_number, raw_string) VALUES (?,?,?,?,?,?,?)";
+    #(domain_name,advertiser_domain,publisher_id, account_type,cert_authority_id,line_number,is_valid_syntax,raw_string) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+    domain_name       = domain_name
+    advertiser_domain = ''
+    publisher_id      = ''
+    account_type      = ''
+    cert_authority_id = ''
+    raw_string        = ','.join(data_row)
+
+    if len(data_row) >= 3:
+        advertiser_domain  = data_row[0].lower()
+        publisher_id       = data_row[1].lower()
+        account_type       = data_row[2].lower()
+
+    if len(data_row) == 4:
+        cert_authority_id  = data_row[3].lower()
+
+    #data validation
+    data_valid = 1
+
+    # Minimum length of a domain name is 1 character, not including extensions.
+    # Domain Name Rules - Nic AG
+    # www.nic.ag/rules.htm
+    if(len(domain_name) < 3):
+        data_valid = 0
+
+    if(len(advertiser_domain) < 3):
+        data_valid = 0
+
+    # could be single digit integers
+    if(len(publisher_id) < 1):
+        data_valid = 0
+
+    # ads.txt supports 'DIRECT' and 'RESELLER'
+    if(len(account_type) < 6):
+        data_valid = 0
+
+    if(data_valid > 0):
+        # Insert a row of data using bind variables (protect against sql injection)
+        c = connection.cursor()
+        c.execute(insert_stmt, (domain_name, advertiser_domain, publisher_id, account_type, cert_authority_id, line_number, raw_string,))
+
+
+        data = c.fetchall()
+        try:
+            if not data:
+                connection.commit()
+        except sqlite3.Error as e:
+            print("Database error: %s" % (' '.join(e.args)))
+        except Exception as e:
+            print("Exception in _query: %s" % e)
+        
+        #(1,domain_name,advertiser_domain,publisher_id, account_type,cert_authority_id,1,1,data_row,datetime.now(),datetime.now()))
+
+        # Save (commit) the changes
+        connection.commit()
+        return 1
+
+    return 0
 
 
 
