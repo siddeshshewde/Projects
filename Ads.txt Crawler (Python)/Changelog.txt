@@ -11,4 +11,4 @@
 	- Processing row to sql table (sqlite3)
 
 12th July 2020
-	- Storing Error Logs 
+	- Storing Error Logs (Ongoing)
