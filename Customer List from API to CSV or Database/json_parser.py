@@ -63,7 +63,7 @@ with open(csv_final, 'w') as csvfinal:
 			response = requests.get(request_list[i])#, headers=myheaders)
 
 		except requests.exceptions.RequestException as e:
-	    	# log warnings in db and also count of errors - error_customer_count
+	    	
 			logging.warning(e)
 			print ('Error Block')
 			writer.writerow([customer_list[i], product_list[i], 'API Failure'])
@@ -72,20 +72,15 @@ with open(csv_final, 'w') as csvfinal:
 
 		api_request_end_time = time.time()
 		api_request_total_time += api_request_end_time - api_request_start_time
-		#print(response.text)
-		a = json.loads(response.text)
-		#print (a)
 		
+		a = json.loads(response.text)	
 
 		try:
 			writer.writerow([customer_list[i], product_list[i], a['data']['rules']['publisher'][0]['config']['10000']['ext_pub_code']['val']])
-			#print (a['data']['rules']['publisher'][0]['config']['10000']['ext_pub_code']['val'])
+			
 		except:
 			writer.writerow([customer_list[i], product_list[i], 'YBNCA Mapping not Present'])
-			ybnca_mapping_error_count += 1
-
-			
-
+			ybnca_mapping_error_count += 1		
 
 csv_write_end_time = time.time()		
 	
