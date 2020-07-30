@@ -6,7 +6,6 @@ import time
 import json
 import csv
 
-
 # Declaring Variables
 csv_customer_list         = 'customer_list.csv'
 csv_final                 = 'customer_mapping.csv'
@@ -47,7 +46,6 @@ csv_read_end_time = time.time()
 
 csv_write_start_time = time.time()
 
-
 with open(csv_final, 'w') as csvfinal:
 	writer = csv.writer(csvfinal, delimiter=',', lineterminator='\n')
 
@@ -55,7 +53,6 @@ with open(csv_final, 'w') as csvfinal:
 
 	writer.writerow(['HB Customer ID','Product Type ID','YBNCA Customer ID'])
 	
-
 	for i in range(0, len(customer_list)):
 		print (i)
 		api_request_start_time = time.time()
@@ -76,16 +73,13 @@ with open(csv_final, 'w') as csvfinal:
 		a = json.loads(response.text)	
 
 		try:
-			writer.writerow([customer_list[i], product_list[i], a['data']['rules']['publisher'][0]['config']['10000']['ext_pub_code']['val']])
-			
+			writer.writerow([customer_list[i], product_list[i], a['data']['rules']['publisher'][0]['config']['10000']['ext_pub_code']['val']])	
 		except:
 			writer.writerow([customer_list[i], product_list[i], 'YBNCA Mapping not Present'])
 			ybnca_mapping_error_count += 1		
 
 csv_write_end_time = time.time()		
 	
-
-
 print ('Writing of Data - Done!')
 print ('Total Records: {num_records}'.format(num_records=len(customer_list)))
 print ('Time taken to Read from CSV: {csv_read_time}'.format(csv_read_time= csv_read_end_time-csv_read_start_time))
