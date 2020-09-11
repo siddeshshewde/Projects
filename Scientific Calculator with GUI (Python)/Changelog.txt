@@ -4,5 +4,6 @@
 12th Sept 2020
 - Creater Outer Frame
 - Menubar
-- Inner Grid
+- Inner Grid (Buttons Completed)
 - Exit Function
+- Corrected Padding
