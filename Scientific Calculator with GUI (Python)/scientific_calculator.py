@@ -34,7 +34,7 @@ root.resizable(width = True, height = True)
 root.geometry("600x568+0+0")
 
 calc = Frame(root)
-calc.grid()
+calc.grid(ipadx=100, ipady=100)
 
 ### Outer Frame ###
 
@@ -60,13 +60,13 @@ clear_button = Button(calc, text = "C", width = 6, height = 2, font=('arial', 20
 clearAll_button = Button(calc, text = "CE", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 1, column = 0)
 back_button = Button(calc, text = "Back", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 1, column = 2)
 zero_button = Button(calc, text = "0", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 5, column = 1)
-equal_button = Button(calc, text = "=", width = 12, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 5, column = 2)
+equal_button = Button(calc, text = "=", width = 13, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 5, column = 2, columnspan = 2)
 
-add_button = Button(calc, text = "C", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 1, column = 1)
-subtract_button = Button(calc, text = "C", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 1, column = 1)
-multiply_button = Button(calc, text = "C", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 1, column = 1)
-divide_button = Button(calc, text = "C", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 1, column = 1)
-
+add_button = Button(calc, text = "+", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 1, column = 3)
+subtract_button = Button(calc, text = "-", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 2, column = 3)
+multiply_button = Button(calc, text = "*", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 3, column = 3)
+divide_button = Button(calc, text = "/", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 4, column = 3)
+dot_button = Button(calc, text = ".", width = 6, height = 2, font=('arial', 20, 'bold'), bd = 4, bg = "powder blue").grid(row = 5, column = 0)
 
 
 ### Inner Grid ###
