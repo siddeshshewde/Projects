@@ -97,7 +97,6 @@ closebracket_button = Button(calc, text = ")", width = 6, height = 2, font=('ari
 
 
 
-
 ### Menu Bar ###
 
 menubar = Menu(calc)
