@@ -1,0 +1,14 @@
+1st July 2020
+	- Initial version
+
+3rd July 2020
+	- Load URL and Domain Queue Function
+
+4th July 2020
+	- Storing data to Database Function
+
+5th July 2020
+	- Processing row to sql table (sqlite3)
+
+12th July 2020
+	- Storing Error Logs (Ongoing)
