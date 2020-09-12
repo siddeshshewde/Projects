@@ -16,13 +16,12 @@ def exit():
 # Standard Calculator Function
 def standard():
     root.resizable(width = False, height = False)
-    root.geometry("450x300+0+0")
+    root.geometry("700x300+0+0")
 
 # Scientific Calculator Function
 def scientific():
     root.resizable(width = False, height = False)
     root.geometry("694x568+0+0")
-
 
 
 ### Outer Frame ###
@@ -79,8 +78,6 @@ log_button = Button(calc, text = "log", width = 6, height = 2, font=('arial', 20
 exponent_button = Button(calc, text = "e", width = 6, height = 2, font=('arial', 20, 'bold'),  bg = "powder blue").grid(row = 2, column = 6)
 pi_button = Button(calc, text = "π", width = 6, height = 2, font=('arial', 20, 'bold'),  bg = "powder blue").grid(row = 2, column = 7)
 
-
-
 percent_button = Button(calc, text = "%", width = 6, height = 2, font=('arial', 20, 'bold'),  bg = "powder blue").grid(row = 3, column = 5)
 power_button = Button(calc, text = "^", width = 6, height = 2, font=('arial', 20, 'bold'),  bg = "powder blue").grid(row = 3, column = 6)
 factorial_button = Button(calc, text = "!", width = 6, height = 2, font=('arial', 20, 'bold'),  bg = "powder blue").grid(row = 3, column = 7)
@@ -94,7 +91,6 @@ closebracket_button = Button(calc, text = ")", width = 6, height = 2, font=('ari
 closebracket_button = Button(calc, text = ")", width = 6, height = 2, font=('arial', 20, 'bold'),  bg = "powder blue").grid(row = 5, column = 6)
 
 ### Inner Grid ###
-
 
 
 ### Menu Bar ###
