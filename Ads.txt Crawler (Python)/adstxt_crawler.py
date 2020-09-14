@@ -84,8 +84,8 @@ def storing_data_to_database (connection, url_queue, domain_queue):
             logging.warning("schema inappropriate, skipping")
             continue
 
-        if ('<html' in response.text):
-            logging.warning("schema inappropriate, skipping")
+        if ('<html' in response.text or '<script' in response.text):
+            logging.warning("html or js content, skipping")
             continue
 
         temp_file = 'temp_file.csv'
