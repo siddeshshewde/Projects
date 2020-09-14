@@ -4,18 +4,17 @@ import csv
 import sqlite3
 import logging
 from optparse import OptionParser
-#pip install requests
-import requests
 import re
 from datetime import datetime
-from tld import get_fld
+from tld import get_tld
+
+#pip install requests
+import requests
 
 try:
     from urllib.parse import urlparse
 except ImportError:
      from urlparse import urlparse
-
-from tld import get_fld
 
 
 def load_url_queue(csv_domain_list, url_queue, domain_queue):
@@ -29,7 +28,8 @@ def load_url_queue(csv_domain_list, url_queue, domain_queue):
         for domain in domains:
             
             try:
-                host = get_fld(domain[0], as_object=True)
+                domain[0] = 'http://{d}'.format(d=domain[0])
+                host = get_tld(domain[0], as_object=True)
                 host = host.fld
             except:
                 host = domain[0]
@@ -50,7 +50,8 @@ def storing_data_to_database (connection, url_queue, domain_queue):
     row_count = 0
 
     myheaders = {
-        'User-Agent': 'AdxTxtCrawler/1.0; +Siddesh Test',
+        #'User-Agent': 'AdxTxtCrawler/1.0; +Siddesh Test',
+        'User-Agent': 'Mediapartners-Google',
         'Accept'    : 'text/plain',
     }
 
@@ -66,12 +67,12 @@ def storing_data_to_database (connection, url_queue, domain_queue):
             #print (response.status_code)
             #print (response.history)
             #print (response)
-            
+
         except requests.exceptions.RequestException as e:
             # log warnings in db and also count of errors - error_domain_count
             logging.warning(e)
             continue
-        
+
         # Checking for redirects/http errors/content        
         # disallow anything where response history > 3
         if (len(response.history) > 3):
@@ -244,9 +245,9 @@ if total_domain_count > 0:
     print ('Database Connected')
     
 with connection:
-    create_stmt = "create table ads_txt (        row_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, domain_name varchar(100) NOT NULL,        advertiser_domain varchar(100),        publisher_id int(50),        account_type varchar(100),        cert_authority_id varchar(100),        line_number int(10),        is_valid_syntax tinyint(1) DEFAULT 0,        raw_string varchar(200),        creation_date datetime DEFAULT CURRENT_TIMESTAMP,        updation_date datetime DEFAULT CURRENT_TIMESTAMP    );"
-    c = connection.cursor()
-    c.execute(create_stmt)
+    #create_stmt = "create table ads_txt (        row_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, domain_name varchar(100) NOT NULL,        advertiser_domain varchar(100),        publisher_id int(50),        account_type varchar(100),        cert_authority_id varchar(100),        line_number int(10),        is_valid_syntax tinyint(1) DEFAULT 0,        raw_string varchar(200),        creation_date datetime DEFAULT CURRENT_TIMESTAMP,        updation_date datetime DEFAULT CURRENT_TIMESTAMP    );"
+    #c = connection.cursor()
+    #c.execute(create_stmt)
     print('Table Created')
     valid_domain_count = storing_data_to_database (connection, url_queue, domain_queue)
     if(valid_domain_count > 0): 
