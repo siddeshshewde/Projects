@@ -21,3 +21,4 @@
 
 14th September 2020
 	- Logging cleaned domain (without subdomain/protocol)
+	- Added Genuine and Google Bot Useragents for crawling  

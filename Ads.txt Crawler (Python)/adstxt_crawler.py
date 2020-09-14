@@ -46,8 +46,9 @@ def storing_data_to_database (connection, url_queue, domain_queue):
     row_count = 0
 
     myheaders = {
-        #'User-Agent': 'AdxTxtCrawler/1.0; +Siddesh Test',
-        'User-Agent': 'Mediapartners-Google',
+        'User-Agent': 'AdxTxtCrawler/1.0; +Siddesh Test',
+        #'User-Agent': 'Mediapartners-Google',
+        #'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36'),
         'Accept'    : 'text/plain',
     }
 
