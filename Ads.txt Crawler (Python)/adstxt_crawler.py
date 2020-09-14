@@ -8,6 +8,7 @@ from optparse import OptionParser
 import requests
 import re
 from datetime import datetime
+from tld import get_fld
 
 try:
     from urllib.parse import urlparse
@@ -21,14 +22,15 @@ def load_url_queue(csv_domain_list, url_queue, domain_queue):
     
     row_count = 0
 
-    with open(csv_domain_list, 'rb') as csvfile:
+    with open(csv_domain_list) as csvfile:
         print ('Reading Domains from csv')
         domains = csv.reader(csvfile, delimiter=',', quotechar='|')
-        
+
         for domain in domains:
             
             try:
-                host = get_fld(domain[0])
+                host = get_fld(domain[0], as_object=True)
+                host = host.fld
             except:
                 host = domain[0]
             domain_queue[row_count] = host
@@ -53,8 +55,9 @@ def storing_data_to_database (connection, url_queue, domain_queue):
     }
 
     for domain in range(0, len(url_queue)):
-        print (url_queue[domain])
         
+        print (url_queue[domain])
+
         # if we can't connect, then move on
         try:
             response = requests.get(url_queue[domain], headers=myheaders, allow_redirects=True, timeout=2)
@@ -72,7 +75,8 @@ def storing_data_to_database (connection, url_queue, domain_queue):
         # Checking for redirects/http errors/content        
         # disallow anything where response history > 3
         if (len(response.history) > 3):
-            error_log (connection, domain_name, data_row = None, comment, line_number = None, 'too many redirects.'):
+            #error_log (connection, domain_name, data_row = None, comment, line_number = None, 'too many redirects.')
+            logging.warning("too many redirects.")
             continue
 
         # HTML content, skipping
@@ -80,12 +84,16 @@ def storing_data_to_database (connection, url_queue, domain_queue):
             logging.warning("schema inappropriate, skipping")
             continue
 
+        if ('<html' in response.text):
+            logging.warning("schema inappropriate, skipping")
+            continue
+
         temp_file = 'temp_file.csv'
         with open(temp_file, 'wb') as t:
-            t.write(response.text)
+            t.write(response.text.encode())
             t.close()
 
-        with open(temp_file, 'rU') as t:
+        with open(temp_file, 'r') as t:
             #read the line, split on first comment and keep what is to the left (if any found)
             line_reader = csv.reader(t, delimiter='#', quotechar='|')
             comment = ''
@@ -127,8 +135,8 @@ def processing_row_to_database(connection, data_row, comment, domain_name, line_
     #print (comment)
     #print (hostname)
 
-    print (comment)
-    insert_stmt = "INSERT INTO ads_txt_parsed_lines (domain_name, advertiser_domain, publisher_id, account_type, cert_authority_id, line_number, raw_string) VALUES (?,?,?,?,?,?,?)";
+    #print (comment)
+    insert_stmt = "INSERT INTO ads_txt (domain_name, advertiser_domain, publisher_id, account_type, cert_authority_id, line_number, raw_string) VALUES (?,?,?,?,?,?,?);"
     #(domain_name,advertiser_domain,publisher_id, account_type,cert_authority_id,line_number,is_valid_syntax,raw_string) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
     domain_name       = domain_name
     advertiser_domain = ''
@@ -189,7 +197,7 @@ def processing_row_to_database(connection, data_row, comment, domain_name, line_
     return 0
 
 def error_log (connection, domain_name, data_row, comment, line_number, error_message):
-    insert_stmt = "INSERT INTO ads_txt_error_logs (domain_name, error_message) VALUES (?,?)";
+    insert_stmt = "INSERT INTO ads_txt_error_logs (domain_name, error_message) VALUES (?,?);"
     c = connection.cursor()
     c.execute(insert_stmt, (domain_name, error_message,))
 
@@ -236,11 +244,16 @@ total_domain_count = load_url_queue(csv_domain_list,url_queue ,domain_queue)
 
 
 if total_domain_count > 0:
-    connection = sqlite3.connect('testdb.db')
+    connection = sqlite3.connect('ads_txt_nishchay.db')
     print ('Database Connected')
+    
 with connection:
+    create_stmt = "create table ads_txt (        row_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, domain_name varchar(100) NOT NULL,        advertiser_domain varchar(100),        publisher_id int(50),        account_type varchar(100),        cert_authority_id varchar(100),        line_number int(10),        is_valid_syntax tinyint(1) DEFAULT 0,        raw_string varchar(200),        creation_date datetime DEFAULT CURRENT_TIMESTAMP,        updation_date datetime DEFAULT CURRENT_TIMESTAMP    );"
+    c = connection.cursor()
+    c.execute(create_stmt)
+    print('Table Created')
     valid_domain_count = storing_data_to_database (connection, url_queue, domain_queue)
-    if(valid_domain_count > 0):
+    if(valid_domain_count > 0): 
         connection.commit()
 
 connection.close()
@@ -251,5 +264,5 @@ end_time = time.time()
 print ('Total Number of Domains: ' + str(total_domain_count))
 print ('Total Number of Entries Added: ' + str(valid_domain_count)) 
 print ('Start Time: ' + time.asctime( time.localtime(start_time)))
-print ('End TIme: ' + time.asctime( time.localtime(end_time)))
+print ('End Time: ' + time.asctime( time.localtime(end_time)))
 print ('Total Time Taken: ' + str(end_time-start_time))
