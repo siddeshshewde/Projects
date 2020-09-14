@@ -1,11 +1,8 @@
 1. Storing in sql db or csv (both options)
 2. Storing error log in sql db or csv (both options)
-3.URL Cleaning using from tld import get_tld OR import tldextract
-4. Proper cleaning of data and exhaustive error logging
-5. Ads.txt Entries Cleaning
-6. Showing additional details like:
-	total domains crawled
+3. Proper cleaning of data and exhaustive error logging
+4. Ads.txt Entries Cleaning
+5. Showing additional details like:
 	error domain count
 	error https status count
-	total time taken
 	average time taken for each domain
