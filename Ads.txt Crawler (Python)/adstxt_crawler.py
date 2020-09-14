@@ -222,10 +222,6 @@ def error_log (connection, domain_name, data_row, comment, line_number, error_me
 
 start_time = time.time()
 
-host = 'google.com'
-url = 'https://forbes.com/ads.txt'
-
-
 logging.warning("Siddesh")
 
 domain_queue = {}
@@ -244,7 +240,7 @@ total_domain_count = load_url_queue(csv_domain_list,url_queue ,domain_queue)
 
 
 if total_domain_count > 0:
-    connection = sqlite3.connect('ads_txt_nishchay.db')
+    connection = sqlite3.connect('ads_txt.db')
     print ('Database Connected')
     
 with connection:
