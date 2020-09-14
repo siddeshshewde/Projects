@@ -36,13 +36,9 @@ def load_url_queue(csv_domain_list, url_queue, domain_queue):
             domain_queue[row_count] = host
             url_queue[row_count] = 'http://{host}/ads.txt'.format(host=host)
             row_count += 1    
-    print ('Stored URLs and Domains in a variable.')
-    #print ("domain queue")
-    #for i in range (0, row_count):
-    #        print (domain_queue[i])    
+    print ('Stored URLs and Domains in a variable.')   
 
     return row_count
-
 
 
 def storing_data_to_database (connection, url_queue, domain_queue):
@@ -129,6 +125,7 @@ def storing_data_to_database (connection, url_queue, domain_queue):
 
     return row_count
 
+
 def processing_row_to_database(connection, data_row, comment, domain_name, line_number):
 
     #print (connection) 
@@ -197,6 +194,7 @@ def processing_row_to_database(connection, data_row, comment, domain_name, line_
 
     return 0
 
+
 def error_log (connection, domain_name, data_row, comment, line_number, error_message):
     insert_stmt = "INSERT INTO ads_txt_error_logs (domain_name, error_message) VALUES (?,?);"
     c = connection.cursor()
@@ -234,7 +232,6 @@ valid_domain_count = 0
 error_domain_count = 0
 total_time_taken   = 0
 average_time_taken = 0
-
 
 
 total_domain_count = load_url_queue(csv_domain_list,url_queue ,domain_queue)
