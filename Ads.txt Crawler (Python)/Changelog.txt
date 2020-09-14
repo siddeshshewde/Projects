@@ -19,6 +19,7 @@
 	- added check for html and javascript content to skip (query optimization)
 	- added create table statement to make the code generic
 
-14th September 2020
+15th September 2020
 	- Logging cleaned domain (without subdomain/protocol)
 	- Added Genuine and Google Bot Useragents for crawling  
+	- Removed unwanted code and comments (clean code)
