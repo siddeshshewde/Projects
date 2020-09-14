@@ -59,11 +59,6 @@ def storing_data_to_database (connection, url_queue, domain_queue):
         # if we can't connect, then move on
         try:
             response = requests.get(url_queue[domain], headers=myheaders, allow_redirects=True, timeout=2)
-            #encoding = response.encoding
-            #print (response.raise_for_status())
-            #print (response.status_code)
-            #print (response.history)
-            #print (response)
 
         except requests.exceptions.RequestException as e:
             # log warnings in db and also count of errors - error_domain_count
@@ -77,7 +72,7 @@ def storing_data_to_database (connection, url_queue, domain_queue):
             logging.warning("too many redirects.")
             continue
 
-        # HTML content, skipping
+        # HTML or js content, skipping
         if (re.search('^([^,]+,){2,3}?[^,]+$', response.text, re.MULTILINE) is None):
             logging.warning("schema inappropriate, skipping")
             continue
@@ -98,29 +93,20 @@ def storing_data_to_database (connection, url_queue, domain_queue):
 
             line_number = 1
             for line in line_reader:
-                #print (line)
                 try:
                     data_line = line[0]
                 except:
                     data_line = ""
 
-                #determine delimiter, conservative = do it per row
-                if data_line.find(",") != -1:
-                    data_delimiter = ','
-                elif data_line.find("\t") != -1:
-                    data_delimiter = '\t'
-                else:
-                    data_delimiter = ' '     
-                #print (data_line)
                 data_reader = csv.reader([data_line], delimiter=',', quotechar='|')
-                #print (data_reader)
+
                 for row in data_reader:
                     if len(row) > 0 and row[0].startswith( '#' ):
                         continue
 
                     if (len(line) > 1) and (len(line[1]) > 0):
                          comment = line[1]
-                    #print (row)
+
                     row_count = row_count + processing_row_to_database(connection, row, comment, domain_queue[domain], line_number)
                     line_number += 1
 
@@ -129,14 +115,9 @@ def storing_data_to_database (connection, url_queue, domain_queue):
 
 def processing_row_to_database(connection, data_row, comment, domain_name, line_number):
 
-    #print (connection) 
-    #print (data_row)
-    #print (comment)
-    #print (hostname)
-
-    #print (comment)
     insert_stmt = "INSERT INTO ads_txt (domain_name, advertiser_domain, publisher_id, account_type, cert_authority_id, line_number, raw_string) VALUES (?,?,?,?,?,?,?);"
     #(domain_name,advertiser_domain,publisher_id, account_type,cert_authority_id,line_number,is_valid_syntax,raw_string) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+
     domain_name       = domain_name
     advertiser_domain = ''
     publisher_id      = ''
@@ -186,8 +167,6 @@ def processing_row_to_database(connection, data_row, comment, domain_name, line_
             print("Database error: %s" % (' '.join(e.args)))
         except Exception as e:
             print("Exception in _query: %s" % e)
-        
-        #(1,domain_name,advertiser_domain,publisher_id, account_type,cert_authority_id,1,1,data_row,datetime.now(),datetime.now()))
 
         # Save (commit) the changes
         connection.commit()
