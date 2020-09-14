@@ -13,8 +13,11 @@
 12th July 2020
 	- Storing Error Logs (Ongoing)
 
-15th September 2020
+14th September 2020
 	- used get_fld instead of get_tld
 	- updated code to support on python 3
 	- added check for html and javascript content to skip (query optimization)
 	- added create table statement to make the code generic
+
+14th September 2020
+	- Logging cleaned domain (without subdomain/protocol)
