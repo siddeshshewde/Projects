@@ -3,19 +3,14 @@ import time
 import csv
 import sqlite3
 import logging
-from optparse import OptionParser
 import re
 from datetime import datetime
+
+#pip install tld
 from tld import get_tld
 
 #pip install requests
 import requests
-
-try:
-    from urllib.parse import urlparse
-except ImportError:
-     from urlparse import urlparse
-
 
 def load_url_queue(csv_domain_list, url_queue, domain_queue):
     
@@ -81,12 +76,12 @@ def storing_data_to_database (connection, url_queue, domain_queue):
             logging.warning("html or js content, skipping")
             continue
 
-        temp_file = 'temp_file.csv'
-        with open(temp_file, 'wb') as t:
+        target_file = 'Crawled Domains.csv'
+        with open(target_file, 'wb') as t:
             t.write(response.text.encode())
             t.close()
 
-        with open(temp_file, 'r') as t:
+        with open(target_file, 'r') as t:
             #read the line, split on first comment and keep what is to the left (if any found)
             line_reader = csv.reader(t, delimiter='#', quotechar='|')
             comment = ''
