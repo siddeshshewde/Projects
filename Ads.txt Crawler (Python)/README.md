@@ -52,29 +52,6 @@ Table Name  : ads_txt | variable=create_stmt
 Domain List : domain_list (.csv) | variable=csv_domain_list
 
 
-Table Columns:
-row_id
-
-domain_name 
-
-advertiser_domain 
-
-publisher_id 
-
-account_type 
-
-cert_authority_id 
-
-line_number
-
-is_valid_syntax
-
-raw_string
-
-creation_date
-
-updation_date
-
 ## Warnings
 - If the output file is not deleted before running another crawler, the file will be replaced.
 - This is an example prototype crawler and would be suitable only for a very modest production usage. It doesn't contain a lot of niceties of a production crawler, such as parallel HTTP download and parsing of the data files, stateful recovery of target servers being down, usage of a real production DB server etc.
