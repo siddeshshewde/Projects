@@ -53,16 +53,26 @@ Domain List : domain_list (.csv) | variable=csv_domain_list
 
 
 Table Columns:
-row_id	
-domain_name
-advertiser_domain
-publisher_id
-account_type
-cert_authority_id
+row_id
+
+domain_name 
+
+advertiser_domain 
+
+publisher_id 
+
+account_type 
+
+cert_authority_id 
+
 line_number
+
 is_valid_syntax
+
 raw_string
+
 creation_date
+
 updation_date
 
 ## Warnings
