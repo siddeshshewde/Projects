@@ -1,4 +1,5 @@
-# Ads.txt Crawler (Python)
+<h1 align="center">Ads.txt Crawler (Python)</h1>
+ 
 
 ## Introduction
 A Simple crawler for ads.txt files given a list of URLs or domains and save them to csv as well as sqlite db.
