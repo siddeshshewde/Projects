@@ -26,4 +26,4 @@
 
 26th September 2020
 	- Read File - encoding = utf-8
-	
+	- Trim all spaces while logging in db 
