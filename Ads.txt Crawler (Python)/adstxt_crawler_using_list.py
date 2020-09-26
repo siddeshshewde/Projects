@@ -81,7 +81,7 @@ def storing_data_to_database (connection, url_queue, domain_queue):
             t.write(response.text.encode())
             t.close()
 
-        with open(target_file, 'r') as t:
+        with open(target_file, 'r', encoding="utf-8") as t:
             #read the line, split on first comment and keep what is to the left (if any found)
             line_reader = csv.reader(t, delimiter='#', quotechar='|')
             comment = ''
@@ -151,8 +151,7 @@ def processing_row_to_database(connection, data_row, comment, domain_name, line_
     if(data_valid > 0):
         # Insert a row of data using bind variables (protect against sql injection)
         c = connection.cursor()
-        c.execute(insert_stmt, (domain_name, advertiser_domain, publisher_id, account_type, cert_authority_id, line_number, raw_string,))
-
+        c.execute(insert_stmt, (domain_name.strip(), advertiser_domain.strip(), publisher_id.strip(), account_type.strip(), cert_authority_id.strip(), line_number, raw_string,))
 
         data = c.fetchall()
         try:

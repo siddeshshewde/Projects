@@ -23,3 +23,7 @@
 	- Logging cleaned domain (without subdomain/protocol)
 	- Added Genuine and Google Bot Useragents for crawling  
 	- Removed unwanted code and comments (clean code)
+
+26th September 2020
+	- Read File - encoding = utf-8
+	
