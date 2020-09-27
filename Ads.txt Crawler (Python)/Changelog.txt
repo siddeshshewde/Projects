@@ -27,3 +27,15 @@
 26th September 2020
 	- Read File - encoding = utf-8
 	- Trim all spaces while logging in db 
+
+27th September 2020
+	- Create ads_txt_error_logs table query
+	- Using list instead of dict (query optimization)
+	- Logging Status Codes
+
+28th September 2020
+	- Error Logging
+	- Fixed SSL Error ([SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1076)') - http://credit-land.com/ads.txt
+	- Fixed Field Limit Error (_csv.Error: field larger than field limit (131072) - http://z.today/ads.txt
+	- Added Error Domain Count
+	- Viewing Time Taken in proper format

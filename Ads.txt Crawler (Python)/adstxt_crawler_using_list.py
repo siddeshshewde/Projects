@@ -1,18 +1,26 @@
 import sys
 import time
-import csv
 import sqlite3
 import logging
 import re
-from datetime import datetime
+import datetime
 
 #pip install tld
-from tld import get_tld
+from tld import get_fld
+import tld
 
 #pip install requests
 import requests
 
-def load_url_queue(csv_domain_list, url_queue, domain_queue):
+#install certificates or import ssl as below (https://stackoverflow.com/questions/35569042/ssl-certificate-verify-failed-with-python3)
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
+#increasing csv field size limit to 262144
+import csv
+csv.field_size_limit(256<<10)
+
+def load_url_queue(csv_domain_list, url_queue):
     
     row_count = 0
 
@@ -21,23 +29,22 @@ def load_url_queue(csv_domain_list, url_queue, domain_queue):
         domains = csv.reader(csvfile, delimiter=',', quotechar='|')
 
         for domain in domains:
-            
             try:
-                domain[0] = 'http://{d}'.format(d=domain[0])
-                host = get_tld(domain[0], as_object=True)
-                host = host.fld
+                host = get_fld(domain[0], fix_protocol=True)
             except:
                 host = domain[0]
-            domain_queue[row_count] = host
-            url_queue[row_count] = 'http://{host}/ads.txt'.format(host=host)
+
+            url_queue.append('http://{host}/ads.txt'.format(host=host))
+
             row_count += 1    
-    print ('Stored URLs and Domains in a variable.')   
+    print ('Stored URLs and Domains in a variable.')
 
     return row_count
 
 
-def storing_data_to_database (connection, url_queue, domain_queue):
+def storing_data_to_database (connection, url_queue):
     
+    global error_domain_count
     row_count = 0
 
     myheaders = {
@@ -47,36 +54,52 @@ def storing_data_to_database (connection, url_queue, domain_queue):
         'Accept'    : 'text/plain',
     }
 
-    for domain in range(0, len(url_queue)):
-        
-        print (url_queue[domain])
+    print ('Below is the domain list:')
+
+    for url in url_queue:
+
+        print (url)
+
+        try:
+            domain = get_fld(url, fix_protocol=True)
+        except:
+            domain = url
 
         # if we can't connect, then move on
         try:
-            response = requests.get(url_queue[domain], headers=myheaders, allow_redirects=True, timeout=2)
+            response = requests.get(url, headers=myheaders, allow_redirects=True, timeout=2)
+            response.raise_for_status()
+            if (response.status_code != 200):
+                error_log (connection, domain, 'HTTP Status Error', response.status_code)
+                error_domain_count += 1
+                continue
 
         except requests.exceptions.RequestException as e:
             # log warnings in db and also count of errors - error_domain_count
-            logging.warning(e)
+            error_log (connection, domain, str(e), None)
+            error_domain_count += 1
             continue
 
         # Checking for redirects/http errors/content        
         # disallow anything where response history > 3
         if (len(response.history) > 3):
-            #error_log (connection, domain_name, data_row = None, comment, line_number = None, 'too many redirects.')
-            logging.warning("too many redirects.")
+            error_log (connection, domain, "too many redirects", response.status_code)
+            error_domain_count += 1
             continue
 
         # HTML or js content, skipping
         if (re.search('^([^,]+,){2,3}?[^,]+$', response.text, re.MULTILINE) is None):
-            logging.warning("schema inappropriate, skipping")
+            #logging.warning("schema inappropriate, skipping")
+            error_log (connection, domain, "schema inappropriate, skipping", '200')
+            error_domain_count += 1
             continue
 
         if ('<html' in response.text or '<script' in response.text):
-            logging.warning("html or js content, skipping")
+            #logging.warning("html or js content, skipping")
+            error_log (connection, domain, "html or js content, skipping", '200')
+            error_domain_count += 1
             continue
 
-        target_file = 'Crawled Domains.csv'
         with open(target_file, 'wb') as t:
             t.write(response.text.encode())
             t.close()
@@ -88,10 +111,15 @@ def storing_data_to_database (connection, url_queue, domain_queue):
 
             line_number = 1
             for line in line_reader:
+                
                 try:
                     data_line = line[0]
                 except:
                     data_line = ""
+
+                #if length of line is > 5000 then skip
+                if len(data_line) > 5000:
+                    continue    
 
                 data_reader = csv.reader([data_line], delimiter=',', quotechar='|')
 
@@ -102,7 +130,7 @@ def storing_data_to_database (connection, url_queue, domain_queue):
                     if (len(line) > 1) and (len(line[1]) > 0):
                          comment = line[1]
 
-                    row_count = row_count + processing_row_to_database(connection, row, comment, domain_queue[domain], line_number)
+                    row_count = row_count + processing_row_to_database(connection, row, comment, domain, line_number)
                     line_number += 1
 
     return row_count
@@ -111,7 +139,6 @@ def storing_data_to_database (connection, url_queue, domain_queue):
 def processing_row_to_database(connection, data_row, comment, domain_name, line_number):
 
     insert_stmt = "INSERT INTO ads_txt (domain_name, advertiser_domain, publisher_id, account_type, cert_authority_id, line_number, raw_string) VALUES (?,?,?,?,?,?,?);"
-    #(domain_name,advertiser_domain,publisher_id, account_type,cert_authority_id,line_number,is_valid_syntax,raw_string) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
     domain_name       = domain_name
     advertiser_domain = ''
@@ -169,10 +196,10 @@ def processing_row_to_database(connection, data_row, comment, domain_name, line_
     return 0
 
 
-def error_log (connection, domain_name, data_row, comment, line_number, error_message):
-    insert_stmt = "INSERT INTO ads_txt_error_logs (domain_name, error_message) VALUES (?,?);"
+def error_log (connection, domain_name, error_message, status_code):
+    insert_stmt = "INSERT INTO ads_txt_error_logs (domain_name, error, status_code) VALUES (?,?,?);"
     c = connection.cursor()
-    c.execute(insert_stmt, (domain_name, error_message,))
+    c.execute(insert_stmt, (domain_name, error_message, status_code))
 
     data = c.fetchall()
     try:
@@ -182,8 +209,6 @@ def error_log (connection, domain_name, data_row, comment, line_number, error_me
         print("Database error: %s" % (' '.join(e.args)))
     except Exception as e:
         print("Exception in _query: %s" % e)
-    
-    #(1,domain_name,advertiser_domain,publisher_id, account_type,cert_authority_id,1,1,data_row,datetime.now(),datetime.now()))
 
     # Save (commit) the changes
     connection.commit()
@@ -195,20 +220,18 @@ def error_log (connection, domain_name, data_row, comment, line_number, error_me
 
 start_time = time.time()
 
-logging.warning("Siddesh")
-
-domain_queue = {}
-url_queue    = {}
-csv_domain_list = 'domain_list.csv'
+url_queue    = []
+csv_domain_list = 'Domain List.csv'
+target_file = 'Crawled Domains.csv'
 connection = None
 total_domain_count = 0
-valid_domain_count = 0
 error_domain_count = 0
+valid_entry_count = 0
 total_time_taken   = 0
 average_time_taken = 0
 
 
-total_domain_count = load_url_queue(csv_domain_list,url_queue ,domain_queue)
+total_domain_count = load_url_queue(csv_domain_list,url_queue)
 
 
 if total_domain_count > 0:
@@ -216,12 +239,14 @@ if total_domain_count > 0:
     print ('Database Connected')
     
 with connection:
-    #create_stmt = "create table ads_txt (        row_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, domain_name varchar(100) NOT NULL,        advertiser_domain varchar(100),        publisher_id int(50),        account_type varchar(100),        cert_authority_id varchar(100),        line_number int(10),        is_valid_syntax tinyint(1) DEFAULT 0,        raw_string varchar(200),        creation_date datetime DEFAULT CURRENT_TIMESTAMP,        updation_date datetime DEFAULT CURRENT_TIMESTAMP    );"
+    #create_ads_txt_stmt = "create table ads_txt (        row_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, domain_name varchar(100) NOT NULL,        advertiser_domain varchar(100),        publisher_id int(50),        account_type varchar(100),        cert_authority_id varchar(100),        line_number int(10),        is_valid_syntax tinyint(1) DEFAULT 0,        raw_string varchar(200),        creation_date datetime DEFAULT CURRENT_TIMESTAMP,        updation_date datetime DEFAULT CURRENT_TIMESTAMP    );"
+    #create_error_log_stmt = "create table ads_txt_error_logs (        row_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, domain_name varchar(100) NOT NULL, error varchar(1000), status_code varchar(100),      creation_date datetime DEFAULT CURRENT_TIMESTAMP,        updation_date datetime DEFAULT CURRENT_TIMESTAMP    );"
     #c = connection.cursor()
     #c.execute(create_stmt)
+    #c.execute(create_error_log_stmt)
     print('Table Created')
-    valid_domain_count = storing_data_to_database (connection, url_queue, domain_queue)
-    if(valid_domain_count > 0): 
+    valid_entry_count = storing_data_to_database (connection, url_queue)
+    if(valid_entry_count > 0): 
         connection.commit()
 
 connection.close()
@@ -230,7 +255,9 @@ print ('Database Connection Closed.')
 end_time = time.time()
 
 print ('Total Number of Domains: ' + str(total_domain_count))
-print ('Total Number of Entries Added: ' + str(valid_domain_count)) 
+print ('Number of Proper Domains: ' + str(total_domain_count-error_domain_count))
+print ('Number of Error Domains: ' + str(error_domain_count))
+print ('Total Number of Entries Added: ' + str(valid_entry_count)) 
 print ('Start Time: ' + time.asctime( time.localtime(start_time)))
 print ('End Time: ' + time.asctime( time.localtime(end_time)))
-print ('Total Time Taken: ' + str(end_time-start_time))
+print ('Total Time Taken: ' + str(datetime.timedelta(seconds=(end_time-start_time))))

@@ -208,7 +208,7 @@ start_time = time.time()
 logging.warning("Siddesh")
 
 domain_queue = {}
-csv_domain_list = 'domain_list.csv'
+csv_domain_list = 'domain_lists.csv'
 connection = None
 total_domain_count = 0
 valid_domain_count = 0
@@ -221,7 +221,7 @@ total_domain_count = load_url_queue(csv_domain_list ,domain_queue)
 
 
 if total_domain_count > 0:
-    connection = sqlite3.connect('ads_txt.db')
+    connection = sqlite3.connect('test.db')
     print ('Database Connected')
     
 with connection:

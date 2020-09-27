@@ -1,4 +1,4 @@
-1. create table query 
+1. create ads.txt table query 
     create table ads_txt_parsed_lines (
         row_id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
         domain_name varchar(100) NOT NULL,
@@ -13,7 +13,16 @@
         updation_date datetime DEFAULT CURRENT_TIMESTAMP
     );    
 
+2. create error_logs table query
+    create table error_logs (
+        row_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+        domain_name varchar(100) NOT NULL, 
+        error varchar(256), 
+        status_code varchar(100), 
+        creation_date datetime DEFAULT CURRENT_TIMESTAMP, 
+        updation_date datetime DEFAULT CURRENT_TIMESTAMP
+    );
 
-2. insert values testing
+3. insert values testing
 	insert into testdb.ads_txt_parsed_lines
 	values (?, 'a','a',1,'a','a',111,1,?,'sdasd',?,?)
