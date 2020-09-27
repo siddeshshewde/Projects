@@ -49,7 +49,7 @@ Target File : Crawled Domains (.csv) | variable=target_file
 
 Table Name  : ads_txt | variable=create_stmt
 
-Domain List : domain_list (.csv) | variable=csv_domain_list
+Domain List : Domain List (.csv) | variable=csv_domain_list
 
 
 ## Warnings
