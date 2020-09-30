@@ -1,0 +1,6 @@
+30th September 2020
+    - Installing Modules (speech_recognition, pyaudio)
+    - Testing audit input to speech
+
+1st October 2020
+    - Initial Build
