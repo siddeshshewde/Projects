@@ -3,4 +3,5 @@
     - Testing audit input to speech
 
 1st October 2020
-    - Initial Build
+    - Main Function
+    - Jarvis Logo
