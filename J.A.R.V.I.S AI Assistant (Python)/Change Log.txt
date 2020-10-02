@@ -8,4 +8,4 @@
 
 3rd October 2020
     - Added System Information on Startup
-    
+    - Internet Connectivity Check
