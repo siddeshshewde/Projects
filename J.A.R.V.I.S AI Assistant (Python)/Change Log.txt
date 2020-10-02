@@ -5,3 +5,7 @@
 1st October 2020
     - Main Function
     - Jarvis Logo
+
+3rd October 2020
+    - Added System Information on Startup
+    

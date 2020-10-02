@@ -1,14 +1,18 @@
 SciPy - Noise Filter
- 
+
+Bye - terminate = ['bye', 'buy', 'shutdown', 'exit', 'quit', 'gotosleep', 'goodbye']
 Ping - Pong 
-Translate language
 Time
-Weather
+Weather -     request = Request('http://api.wunderground.com/api/60eb52589081d5c1/conditions/q/BE/ninove.json')
 Temperature
+clear terminal (vs code / terminal)
 News
-Play Music
+Play Music / Resume / Pause / Stop
 Go Offline
 Lock
 Open Application
 search in chrome
-
+Translate language
+Voice + Text
+Google Something - import google
+Alarm / CheckAlarm()
