@@ -9,3 +9,10 @@
 3rd October 2020
     - Added System Information on Startup
     - Internet Connectivity Check
+
+4th October 2020
+    - Speech To Text
+    - Console Folder Separated
+    - Core, Engine, Utils
+    - Clear Console based on OS
+    - is_startup
