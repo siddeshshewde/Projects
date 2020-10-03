@@ -1,5 +1,6 @@
 import time
 import os
+import logging
 
 #pip install requests
 import requests
@@ -10,6 +11,9 @@ import platform
 
 #pip install psutil
 import psutil
+
+#pip install speech_recognition 
+import speech_recognition as sr
 
 JARVIS_LOGO = "\n" \
               "      ██╗ █████╗ ██████╗ ██╗   ██╗██╗███████╗\n" \
@@ -79,5 +83,28 @@ def main():
 
     print ('Application started.')
     print ('Jarvis at your service. Please tell me how can I help you')
+
+    #while True:
+    mic = sr.Microphone()
+    recognize  = sr.Recognizer()
+
+    with mic as source:
+        recognize.adjust_for_ambient_noise(source)
+        audio = recognize.listen(source)
+
+    try:
+        transcript = recognize.recognize_google(audio)
+        print (transcript)
+        logging.info(transcript)
+    except sr.RequestError:
+        print ('API Error')
+    except sr.UnknownValueError:
+        print ('Unable to recognize speech')    
+
+    exit()
+
+
+
+
 
 main()
