@@ -16,3 +16,4 @@ Translate language
 Voice + Text
 Google Something - import google
 Alarm / CheckAlarm()
+activation assistant name / remove name from speech

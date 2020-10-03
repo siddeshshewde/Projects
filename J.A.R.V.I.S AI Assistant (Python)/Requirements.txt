@@ -1,0 +1,4 @@
+requests == 2.22.0
+speech_recognition  == 3.8.1
+platform == 1.0.8
+psutil == 5.7.2
