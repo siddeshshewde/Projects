@@ -18,3 +18,8 @@ Translate language
 Voice + Text
 Alarm / CheckAlarm()
 activation assistant name / remove name from speech
+
+
+
+Cleaning:
+1. def clear_console(self): (console.py and basic_skills.py)

@@ -1,4 +1,5 @@
 import requests
+import os
 
 class BasicSkills:
 
@@ -16,3 +17,10 @@ class BasicSkills:
         except requests.ConnectionError:
             print ('Internet Connection not available.')
             print ('Skills which use internet will not work.')    
+
+    def clear_console(self):
+        print ('clear console')    
+        if os.name =='posix':
+            os.system('clear')
+        else:
+            os.system('cls')

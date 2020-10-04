@@ -22,4 +22,7 @@ class ConsoleManager:
 
     def clear_console(self):
         print ('clear console')    
-        call('clear' if os.name =='posix' else 'cls')
+        if os.name =='posix':
+            os.system('clear')
+        else:
+            os.system('cls')
