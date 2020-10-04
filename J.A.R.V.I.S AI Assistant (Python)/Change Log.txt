@@ -17,3 +17,8 @@
     - Clear Console based on OS
     - is_startup
 
+5th October 2020
+    - Skills, Basic Skills
+    - Exit Application
+    - Processor (analyze, run)
+    - Basic Structuring

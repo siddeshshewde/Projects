@@ -1,15 +1,13 @@
-#pip install psutil
-import psutil
-
 #Using platform instead, don't need finer granularity
 #from sys import platform
 import platform
 
-#pip install requests
 import requests
+import psutil
+import time
 
 from jarvis.core.console import ConsoleManager
-import time
+
 
 JARVIS_LOGO = "\n" \
               "      ██╗ █████╗ ██████╗ ██╗   ██╗██╗███████╗\n" \

@@ -1,4 +1,3 @@
-#pip install speech_recognition 
 import speech_recognition as sr
 
 class SpeechToTextEngine:
