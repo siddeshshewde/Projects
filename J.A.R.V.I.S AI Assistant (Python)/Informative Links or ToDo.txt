@@ -1,19 +1,20 @@
 SciPy - Noise Filter
 
 Bye - terminate = ['bye', 'buy', 'shutdown', 'exit', 'quit', 'gotosleep', 'goodbye']
-Ping - Pong 
 Time
 Weather -     request = Request('http://api.wunderground.com/api/60eb52589081d5c1/conditions/q/BE/ninove.json')
 Temperature
+Speed Test
 clear terminal (vs code / terminal)
+Open Application
+search in chrome
+Google Something - import google
+Ping - Pong 
 News
 Play Music / Resume / Pause / Stop
 Go Offline
 Lock
-Open Application
-search in chrome
 Translate language
 Voice + Text
-Google Something - import google
 Alarm / CheckAlarm()
 activation assistant name / remove name from speech

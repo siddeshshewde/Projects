@@ -14,8 +14,10 @@ class SpeechToTextEngine:
         try:
             transcript = recognize.recognize_google(audio)
             print (transcript)
-            logging.info(transcript)
+            #logging.info(transcript)
         except sr.RequestError:
             print ('API Error')
         except sr.UnknownValueError:
             print ('Unable to recognize speech')    
+
+        return transcript
