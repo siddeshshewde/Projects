@@ -1,5 +1,4 @@
 SciPy - Noise Filter
-
 Bye - terminate = ['bye', 'buy', 'shutdown', 'exit', 'quit', 'gotosleep', 'goodbye']
 Time
 Weather -     request = Request('http://api.wunderground.com/api/60eb52589081d5c1/conditions/q/BE/ninove.json')
