@@ -77,7 +77,7 @@ def get_commands(update, context):
     /help - get list of commands of the bot''')
 
 def main():
-    updater = Updater('1115939597:AAFJr-WpQz96yJ_ulJXwNApv_q32WuMg2Jk')
+    updater = Updater('1115939597:AAFJr-WpQz96yJ_ulJXwNApv_q32WuMg2Jk', use_context = True)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('news', get_top_news))
