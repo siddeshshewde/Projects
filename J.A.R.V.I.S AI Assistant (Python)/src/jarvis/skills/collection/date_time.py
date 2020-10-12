@@ -8,7 +8,7 @@ r = sr.Recognizer()
 
 # initiate the class consisting all the date time functions
 
-class date_time:
+class DateTime:
 
 
 #function to tell the current date and current day
