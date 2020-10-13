@@ -22,3 +22,6 @@
     - Exit Application
     - Processor (analyze, run)
     - Basic Structuring
+
+13th October 2020
+    - Date Time Skills
