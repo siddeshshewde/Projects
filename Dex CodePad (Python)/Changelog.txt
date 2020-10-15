@@ -1,2 +1,3 @@
 16th October 2020
-    - 
+    - Testing Voice Recognition
+    - Testing Voice to .txt file
