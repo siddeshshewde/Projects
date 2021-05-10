@@ -663,8 +663,8 @@ public class bplustree {
 			
             System.out.println("1. Create a B Plus Tree from File.");
             System.out.println("2. Insert an Element.");
-            System.out.println("3. Delete an Element.");
-            System.out.println("4. Display Elements.");
+            System.out.println("3. Display an Element.");
+            System.out.println("4. Display next 10 Elements.");
             System.out.println("5. Modify an Element.");
             System.out.println("6. Exit.");
             System.out.print("Choose an option: ");
@@ -711,15 +711,26 @@ public class bplustree {
 						
 						System.out.println("***** Done Creating Tree *****");
 						System.out.println("Total Number of Nodes created: " + numberOfNodes);
+				break;
 		
-                case 2 : //head = insert(head);
+                case 2 : 
+				System.out.print("Enter the Key to be inserted: ");
+				String key = input.next();
+				System.out.print("Enter the Value to be inserted: ");
+				String value = input.next();
+				bpt.insert(key, value);
+				System.out.println("Insertion Done.\nInserted Key: "+ key + "\nInserted Value: " + value);
                 break;
+
                 case 3 : 
 				System.out.print("Enter the key to be searched: ");
 				input.nextLine();
 				String searchKey = input.nextLine();
 				System.out.println("Key: "+ searchKey + "\nValue: " +bpt.search(searchKey));
                 break;
+
+				case 5 : 
+
                 case 6 : exit();
             }
         }   
