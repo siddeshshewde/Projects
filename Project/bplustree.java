@@ -714,19 +714,14 @@ public class bplustree {
 		
                 case 2 : //head = insert(head);
                 break;
-                case 3 : //display(head);
-                 break;
+                case 3 : 
+				System.out.print("Enter the key to be searched: ");
+				input.nextLine();
+				String searchKey = input.nextLine();
+				System.out.println("Key: "+ searchKey + "\nValue: " +bpt.search(searchKey));
+                break;
                 case 6 : exit();
             }
         }   
-
-			// System.out.println("----- Search AAA-881 -----");
-			// String searchedValue1 = bpt.search("MLY-359");
-			// System.out.println(searchedValue1);
-			
-			// System.out.println("----- Search MLI-578 -----");
-			// String searchedValue2 = bpt.search("MLI-578");
-			// System.out.println(searchedValue2);
-
 	}
 }
