@@ -2,12 +2,160 @@ import java.lang.*;
 import java.util.*;
 import java.io.*;
 
+
 public class bplustree {
 	int m;
 	InternalNode root;
 	LeafNode firstLeaf;
+	
+	public static void main(String[] args) 
+	{
+		bplustree bpt = null;
 
+		while (true)
+        {
+			
+            System.out.println("1. Create a B Plus Tree from File.");
+            System.out.println("2. Insert an Element.");
+            System.out.println("3. Display an Element.");
+            System.out.println("4. Display next 10 Elements.");
+			System.out.println("5. Delete an Element.");
+            System.out.println("6. Modify an Element.");
+            System.out.println("7. Exit.");
+            System.out.print("Choose an option: ");
 
+			Scanner input = new Scanner(System.in);
+            int option = input.nextInt();
+
+            switch(option)
+            {
+				case 1 : 
+					System.out.print("Enter the filename: ");
+					input.nextLine();
+					String fileName = input.nextLine();
+
+					if (fileName.length() < 1) {
+						System.err.println("Please make sure the input file is in same directory");
+						System.exit(-1);
+					}
+					int numberOfNodes = 0;
+			
+					try 
+					{
+			
+						File file = new File(System.getProperty("user.dir") + "/" + fileName);
+						Scanner sc = new Scanner(file);
+			
+						bpt = new bplustree(3);
+			
+						System.out.println("***** Creating Tree *****");
+						
+						while (sc.hasNextLine()) 
+						{
+							String line = sc.nextLine();
+							String[] keyAndValues = line.split("\\s{8}"); // split the string on spaces, obeys spaces as per partfile.txt
+							
+							numberOfNodes++;
+							bpt.insert(keyAndValues[0], keyAndValues[1]);
+						}
+					} catch (FileNotFoundException e) {
+						System.err.println(e);
+					} catch (IllegalArgumentException e) {
+						System.err.println(e);
+					}
+						
+						System.out.println("***** Done Creating Tree *****");
+						System.out.println("Total Number of Nodes created: " + numberOfNodes);
+				break;
+		
+                case 2 : 
+				System.out.print("Enter the Key to be inserted: ");
+				String key = input.next();
+				System.out.print("Enter the Value to be inserted: ");
+				String value = input.next();
+				bpt.insert(key, value);
+				System.out.println("Insertion Done.\nInserted Key: "+ key + "\nInserted Value: " + value);
+                break;
+
+                case 3 : 
+				System.out.print("Enter the key to be searched: ");
+				String searchKey = input.next();
+				System.out.println("Key: "+ searchKey + "\nValue: " +bpt.search(searchKey));
+                break;
+
+				case 4 :
+				// System.out.print("Enter the key to be searched: ");
+				// searchKey = input.next();
+
+				// bpt.linearNullSearch()
+
+				// int j = 1;
+				// for (Enumeration i = bpt.keys(); i.hasMoreElements();)
+				// {
+				// 	if (i.nextElement() == searchKey)
+				// 	{
+				// 		System.out.println(j + ". Key: " + i.nextElement() + ", Value: " + bpt.search(searchKey));
+				// 		j++;
+				// 	}
+				// 	if (j == 10)
+				// 	{
+				// 		break;
+				// 	}
+				// }
+
+				break;
+
+				case 5 : 
+				System.out.print("Enter the key to be deleted: ");
+				String deleteKey = input.next();
+				bpt.delete(deleteKey);
+				System.out.println("Key: "+ deleteKey + " has been deleted.");
+                break;
+
+				case 6 : 
+				System.out.print("Enter the key to be modified: ");
+				String modifyKey = input.next();
+				System.out.print("Enter the new value: ");
+				String newValue = input.next();
+				bpt.delete(modifyKey);
+				bpt.insert(modifyKey, newValue);
+				System.out.println("The value has modified.\nKey: " + modifyKey + "\nNew Value: " + newValue);
+				break;
+				
+                case 7 : exit();
+            }
+        }   
+	}
+
+	// Sleep mode for x seconds
+	public static void sleep(int seconds)
+    {
+        int ms = seconds * 1000;
+        try
+        {
+            Thread.sleep(ms);
+        }
+        catch(InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+	// Exit the Application 
+	public static void exit()
+    {
+        System.out.println("Closing the application.");
+        sleep(1);
+        System.out.print(".");
+        sleep(1);
+        System.out.print(".");
+        sleep(1);
+        System.out.print(".");
+        sleep(1);
+        System.exit(0);
+    }
+
+	// Binary Search on a sorted Dictionary Pair and returns the target value of the required key.
 	private int binarySearch(DictionaryPair[] dps, int numPairs, String t) {
 
 		Comparator<DictionaryPair> c = new Comparator<DictionaryPair>() {
@@ -21,6 +169,7 @@ public class bplustree {
 		return Arrays.binarySearch(dps, 0, numPairs, new DictionaryPair(t, ""), c);
 	}
 
+	// This method starts at the root node and traverses till leaf nodes
 	private LeafNode findLeafNode(String key) {
 
 		String[] keys = this.root.keys;
@@ -43,19 +192,24 @@ public class bplustree {
 		String[] keys = node.keys;
 		int i;
 
-		for (i = 0; i < node.degree - 1; i++) {
+		for (i = 0; i < node.degree - 1; i++) 
+		{
 			if (key.compareTo(keys[i]) < 0 ) { break; }
 
 		}
 
 		Node childNode = node.childPointers[i];
-		if (childNode instanceof LeafNode) {
+		if (childNode instanceof LeafNode) 
+		{
 			return (LeafNode)childNode;
-		} else {
+		} 
+		else 
+		{
 			return findLeafNode((InternalNode)node.childPointers[i], key);
 		}
 	}
 
+	// Returns the index of required pointer
 	private int findIndexOfPointer(Node[] pointers, LeafNode node) {
 		int i;
 		for (i = 0; i < pointers.length; i++) {
@@ -64,10 +218,12 @@ public class bplustree {
 		return i;
 	}
 
+	// Returns the mid point of the Leaf Node which will be used for Splitting the Nodes
 	private int getMidpoint() {
 		return (int)Math.ceil((this.m + 1) / 2.0) - 1;
 	}
 
+	// Checking for unbalanced Root Node
 	private void handleDeficiency(InternalNode in) {
 
 		InternalNode sibling;
@@ -132,10 +288,12 @@ public class bplustree {
 		}
 	}
 
+	// Checking if Leaf Node is Empty 
 	private boolean isEmpty() {
 		return firstLeaf == null;
 	}
 
+	// Searching the Dictionary 
 	private int linearNullSearch(DictionaryPair[] dps) {
 		for (int i = 0; i <  dps.length; i++) {
 			if (dps[i] == null) { return i; }
@@ -143,6 +301,7 @@ public class bplustree {
 		return -1;
 	}
 
+	// Searching the Node
 	private int linearNullSearch(Node[] pointers) {
 		for (int i = 0; i <  pointers.length; i++) {
 			if (pointers[i] == null) { return i; }
@@ -150,6 +309,7 @@ public class bplustree {
 		return -1;
 	}
 
+	// Shifting the new key to Leaf Node (if required)
 	private void shiftDown(Node[] pointers, int amount) {
 		Node[] newPointers = new Node[this.m + 1];
 		for (int i = amount; i < pointers.length; i++) {
@@ -158,6 +318,7 @@ public class bplustree {
 		pointers = newPointers;
 	}
 
+	// Sorts the Dictionary in Leaf Node
 	private void sortDictionary(DictionaryPair[] dictionary) {
 		Arrays.sort(dictionary, new Comparator<DictionaryPair>() {
 			@Override
@@ -170,6 +331,7 @@ public class bplustree {
 		});
 	}
 
+	// Splitting the Node depending on given order
 	private Node[] splitChildPointers(InternalNode in, int split) {
 
 		Node[] pointers = in.childPointers;
@@ -183,6 +345,7 @@ public class bplustree {
 		return halfPointers;
 	}
 
+	// Splitting the Dictionary if it is full
 	private DictionaryPair[] splitDictionary(LeafNode ln, int split) {
 
 		DictionaryPair[] dictionary = ln.dictionary;
@@ -197,6 +360,7 @@ public class bplustree {
 		return halfDict;
 	}
 
+	// Splitting the Internal Node based on order
 	private void splitInternalNode(InternalNode in) {
 
 		InternalNode parent = in.parent;
@@ -243,6 +407,7 @@ public class bplustree {
 		}
 	}
 
+	// Splitting keys to keep the tree balanced based on given order
 	private String[] splitKeys(String[] keys, int split) {
 
 		String[] halfKeys = new String[this.m];
@@ -257,10 +422,9 @@ public class bplustree {
 		return halfKeys;
 	}
 
-
+	// Deleting the Leaf Node and balancing it
 	public void delete(String key) {
 		if (isEmpty()) {
-
 
 			System.err.println("Invalid Delete: The B+ tree is currently empty.");
 
@@ -372,6 +536,7 @@ public class bplustree {
 		}
 	}
 
+	// Inserting a new Key and Value into tree
 	public void insert(String key, String value){
 		if (isEmpty()) {
 
@@ -443,6 +608,7 @@ public class bplustree {
 		}
 	}
 
+	// Checking if the Leaf Node contains required key and return the value
 	public String search(String key) {
 
 		if (isEmpty()) { return null; }
@@ -460,6 +626,7 @@ public class bplustree {
 	}
 
 
+	// B plus Tree Object with the given order
 	public bplustree(int m) {
 		this.m = m;
 		this.root = null;
@@ -469,6 +636,7 @@ public class bplustree {
 		InternalNode parent;
 	}
 
+	// Internal Node Object
 	private class InternalNode extends Node {
 		int maxDegree;
 		int minDegree;
@@ -532,6 +700,7 @@ public class bplustree {
 			this.degree--;
 		}
 
+		// Internal Node Object
 		private InternalNode(int m, String[] keys) {
 			this.maxDegree = m;
 			this.minDegree = (int)Math.ceil(m/2.0);
@@ -549,6 +718,7 @@ public class bplustree {
 		}
 	}
 
+	// Leaf Node Object
 	public class LeafNode extends Node {
 		int maxNumPairs;
 		int minNumPairs;
@@ -606,6 +776,7 @@ public class bplustree {
 		}
 	}
 
+	// Dictionary Pair used for Leaf Node
 	public class DictionaryPair implements Comparable<DictionaryPair> {
 		String key;
 		String value;
@@ -619,120 +790,5 @@ public class bplustree {
 		public int compareTo(DictionaryPair o) {
 			return key.compareTo(o.key);
 		}
-	}
-
-	//Sid Check
-	public void createTree()
-	{
-		System.out.print("Enter the filename: ");
-
-	}
-
-	public static void sleep(int seconds)
-    {
-        int ms = seconds * 1000;
-        try
-        {
-            Thread.sleep(ms);
-        }
-        catch(InterruptedException ex)
-        {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-	public static void exit()
-    {
-        System.out.println("Closing the application.");
-        sleep(1);
-        System.out.print(".");
-        sleep(1);
-        System.out.print(".");
-        sleep(1);
-        System.out.print(".");
-        sleep(1);
-        System.exit(0);
-    }
-
-	public static void main(String[] args) 
-	{
-		bplustree bpt = null;
-
-		while (true)
-        {
-			
-            System.out.println("1. Create a B Plus Tree from File.");
-            System.out.println("2. Insert an Element.");
-            System.out.println("3. Display an Element.");
-            System.out.println("4. Display next 10 Elements.");
-            System.out.println("5. Modify an Element.");
-            System.out.println("6. Exit.");
-            System.out.print("Choose an option: ");
-
-			Scanner input = new Scanner(System.in);
-            int option = input.nextInt();
-
-            switch(option)
-            {
-				case 1 : 
-					System.out.print("Enter the filename: ");
-					input.nextLine();
-					String fileName = input.nextLine();
-
-					if (fileName.length() < 1) {
-						System.err.println("Please make sure the input file is in same directory");
-						System.exit(-1);
-					}
-					int numberOfNodes = 0;
-			
-					try 
-					{
-			
-						File file = new File(System.getProperty("user.dir") + "/" + fileName);
-						Scanner sc = new Scanner(file);
-			
-						bpt = new bplustree(3);
-			
-						System.out.println("***** Creating Tree *****");
-						
-						while (sc.hasNextLine()) 
-						{
-							String line = sc.nextLine();
-							String[] keyAndValues = line.split("\\s{8}"); // split the string on spaces, obeys spaces as per partfile.txt
-							
-							numberOfNodes++;
-							bpt.insert(keyAndValues[0], keyAndValues[1]);
-						}
-					} catch (FileNotFoundException e) {
-						System.err.println(e);
-					} catch (IllegalArgumentException e) {
-						System.err.println(e);
-					}
-						
-						System.out.println("***** Done Creating Tree *****");
-						System.out.println("Total Number of Nodes created: " + numberOfNodes);
-				break;
-		
-                case 2 : 
-				System.out.print("Enter the Key to be inserted: ");
-				String key = input.next();
-				System.out.print("Enter the Value to be inserted: ");
-				String value = input.next();
-				bpt.insert(key, value);
-				System.out.println("Insertion Done.\nInserted Key: "+ key + "\nInserted Value: " + value);
-                break;
-
-                case 3 : 
-				System.out.print("Enter the key to be searched: ");
-				input.nextLine();
-				String searchKey = input.nextLine();
-				System.out.println("Key: "+ searchKey + "\nValue: " +bpt.search(searchKey));
-                break;
-
-				case 5 : 
-
-                case 6 : exit();
-            }
-        }   
 	}
 }
