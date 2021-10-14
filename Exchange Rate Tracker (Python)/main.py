@@ -1,10 +1,22 @@
 import requests
 from bs4 import BeautifulSoup
-import sendgrid
 import os
+from datetime import date
+
+# Send Grid
+import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content
 
+# Selenium
+import csv
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
 def main():
+
     remitly_rate = ''
 
     # Remitly - https://www.remitly.com/no/en
@@ -17,12 +29,13 @@ def main():
     print (remitly_rate)
 
 
-    my_sg = sendgrid.SendGridAPIClient(api_key = 'APIKEY')
+    my_sg = sendgrid.SendGridAPIClient(api_key = 'API Key')
 
     from_email = Email("siddesh.shewde@gmail.com")  
     to_email = To("shahaa62@gmail.com")  
-    subject = "Test Email"
-    content = Content("text/plain", "Test")
+    subject = "Remitly Exchange Rate: " + str(date.today())
+    mail_body = "Remitly Current Rate: " + remitly_rate
+    content = Content("text/plain", mail_body)
 
     mail = Mail(from_email, to_email, subject, content)
 
