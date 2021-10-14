@@ -1,4 +1,4 @@
-# Money Transfer Lowest Rate (Python)
+# Exchange Rate Tracker (Python)
 
 Getting Real Time exchange rate from Remitly using Beautiful Soup package.
 
