@@ -1,0 +1,3 @@
+OTP Verification System
+Stocks
+Analyze personal netflix data - https://www.dataquest.io/blog/python-tutorial-analyze-personal-netflix-data/
