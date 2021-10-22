@@ -15,10 +15,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
+
 def main():
 
     remitly_rate = ''
     xoom_rate = ''
+    ria_rate = ''
 
     # Remitly - https://www.remitly.com/no/en
     url = 'https://www.remitly.com/us/en/india/pricing'
@@ -38,6 +40,17 @@ def main():
     xoom_rate = div_elements[0].get_text().replace('*', '')
     print (xoom_rate)
 
+    # Establish chrome driver and go to site URL
+    url = "https://reportdata.mytestsite.com/transactionSearch.jsp"
+    driver = webdriver.Chrome(r"C:\Users\sidde\Downloads\chromedriver_win32\chromedriver.exe")
+    driver.get(url)
+    
+    #div_elements = driver.find_elements_by_tag_name('span')
+    #ria_rate = [link.get_attribute('href') for link in links]
+
+    for elem in driver.find_elements_by_xpath('//*[@id="ria"]/div/div/div[3]/section[1]/div/div[2]/div/div/form/div[1]/p[2]/span'):
+        print ("here")
+        print (elem.text)
 
     # my_sg = sendgrid.SendGridAPIClient(api_key = 'API KEY')
 

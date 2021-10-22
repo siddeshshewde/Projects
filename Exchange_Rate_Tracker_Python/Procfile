@@ -1,0 +1,1 @@
+web: gunicorn Exchange_Rate_Tracker.wsgi --log-file -
