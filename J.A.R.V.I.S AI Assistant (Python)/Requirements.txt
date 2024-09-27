@@ -1,4 +1,4 @@
-requests == 2.31.0
+requests == 2.32.0
 speech_recognition  == 3.8.1
 platform == 1.0.8
 psutil == 5.7.2
